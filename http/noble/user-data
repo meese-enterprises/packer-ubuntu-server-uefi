@@ -18,9 +18,11 @@ autoinstall:
     hostname: ubuntu-noble
     package_upgrade: true
     timezone: America/New_York
+    # REF: https://cloudinit.readthedocs.io/en/latest/reference/modules.html#set-passwords
     chpasswd:
+      expire: false
       list:
-        - vagrant:vagrant
+        - ubuntu:ubuntu
     users:
       - name: admin
         passwd: $6$xyz$74AlwKA3Z5n2L6ujMzm/zQXHCluA4SRc2mBfO2/O5uUc2yM2n2tnbBMi/IVRLJuKwfjrLZjAT7agVfiK7arSy/
@@ -28,7 +30,7 @@ autoinstall:
         lock-passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash
-      - name: vagrant
-        plain_text_passwd: vagrant
+      - name: ubuntu
+        plain_text_passwd: ubuntu
         lock-passwd: false
         shell: /bin/bash

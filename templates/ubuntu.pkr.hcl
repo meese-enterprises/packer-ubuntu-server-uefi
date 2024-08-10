@@ -21,7 +21,7 @@ packer {
   }
 }
 
-## Variable will be set via the Command line defined under the `vars` directory
+# Variables will be set via the command line defined under the `vars` directory
 variable "ubuntu_distro" {
   type = string
 }
@@ -36,7 +36,7 @@ variable "ubuntu_iso_file" {
 
 variable "vm_template_name" {
   type = string
-  default = "packerubuntu"
+  default = "ubuntu-uefi"
 }
 
 variable "host_distro" {
@@ -49,8 +49,10 @@ locals {
   output_dir = "output/${local.vm_name}"
   ovmf_prefix = {
     "manjaro" = "x64/"
+    "ubuntu" = ""
   }
   ovmf_suffix = {
+    "mangaro" = ""
     "ubuntu" = "_4M"
   }
 }
@@ -61,11 +63,11 @@ source "qemu" "custom_image" {
   iso_url      = "https://releases.ubuntu.com/${var.ubuntu_version}/${var.ubuntu_iso_file}"
   iso_checksum = "file:https://releases.ubuntu.com/${var.ubuntu_version}/SHA256SUMS"
 
-  # Location of Cloud-Init / Autoinstall Configuration files
-  # Will be served via an HTTP Server from Packer
+  # Location of Cloud-Init / Autoinstall Configuration files;
+  # will be served via an HTTP Server from Packer
   http_directory = "http/${var.ubuntu_distro}"
 
-  # Boot Commands when Loading the ISO file with OVMF.fd file (Tianocore) / GrubV2
+  # Boot commands when loading the ISO file with OVMF.fd file (Tianocore) / GrubV2
   boot_command = [
     "<spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait>",
     "e<wait>",
@@ -78,22 +80,23 @@ source "qemu" "custom_image" {
 
   # QEMU specific configuration
   cpus             = 4
-  memory           = 4096
+  memory           = 8*1024
   accelerator      = "kvm"
-  disk_size        = "30G"
+  disk_size        = "40G"
   disk_compression = true
 
-  efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE${lookup(local.ovmf_suffix, var.host_distro, "")}.fd"
-  efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS${lookup(local.ovmf_suffix, var.host_distro, "")}.fd"
+  efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE${lookup(local.ovmf_suffix, var.host_distro, "_4M")}.fd"
+  efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS${lookup(local.ovmf_suffix, var.host_distro, "_4M")}.fd"
   efi_boot          = true
 
-  # Final image will be available in `output/packerubuntu-*/`
+  # Final image will be available in `output/ubuntu-uefi-*/`
   output_directory = "${local.output_dir}"
 
   # SSH configuration so that Packer can log into the image
   ssh_password     = "packerubuntu"
   ssh_username     = "admin"
   ssh_timeout      = "20m"
+  # Send the passowrd to the shutdown command
   shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
   # NOTE: set this to true when using in CI Pipelines
   headless         = false

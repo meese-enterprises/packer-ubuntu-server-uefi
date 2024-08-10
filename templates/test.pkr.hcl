@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #  limitations under the License.
 
-## Variable will be set via the Command line defined under the `vars` directory
+# Variables will be set via the command line defined under the `vars` directory
 variable "ubuntu_version" {
   type = string
 }
@@ -23,7 +23,7 @@ variable "ubuntu_iso_file" {
 
 variable "vm_template_name" {
   type = string
-  default = "packerubuntu"
+  default = "ubuntu-uefi"
 }
 
 variable "host_distro" {
@@ -42,16 +42,15 @@ locals {
   }
 }
 
-
 source "qemu" "provision_source" {
   iso_url          = "${local.output_dir}/${local.vm_name}"
   iso_checksum     = "none"
   disk_image       = true
   disk_compression = true
-  memory           = 8192
+  memory           = 8*1024
   cpus             = 4
   accelerator      = "kvm"
-  disk_size        = "30G"
+  disk_size        = "40G"
   qemuargs = [
     ["-bios", "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE${lookup(local.ovmf_suffix, var.host_distro, "")}.fd"],
     ["-serial", "mon:stdio"],
@@ -60,10 +59,10 @@ source "qemu" "provision_source" {
   ]
   format          = "qcow2"
 
-  shutdown_command = "echo 'packerubuntu' | sudo shutdown -P now"
+  shutdown_command = "echo 'ubuntu-uefi' | sudo shutdown -P now"
   shutdown_timeout = "15m"
-  ssh_username     = "vagrant"
-  ssh_password     = "vagrant"
+  ssh_username     = "admin"
+  ssh_password     = "packerubuntu"
   ssh_timeout      = "60m"
   headless         = true
 }
