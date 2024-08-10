@@ -44,16 +44,16 @@ locals {
 
 
 source "qemu" "provision_source" {
-  iso_url         = "${local.output_dir}/${local.vm_name}"
-  iso_checksum    = "none"
-  disk_image      = true
+  iso_url          = "${local.output_dir}/${local.vm_name}"
+  iso_checksum     = "none"
+  disk_image       = true
   disk_compression = true
-  memory          = 4096
-  cpus            = 4
-  accelerator     = "kvm"
-  disk_size       = "30G"
-  qemuargs        = [
-    ["-bios", "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}/OVMF_CODE.fd"],
+  memory           = 8192
+  cpus             = 4
+  accelerator      = "kvm"
+  disk_size        = "30G"
+  qemuargs = [
+    ["-bios", "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE${lookup(local.ovmf_suffix, var.host_distro, "")}.fd"],
     ["-serial", "mon:stdio"],
     ["-device", "virtio-net,netdev=forward,id=net0"],
     ["-netdev", "user,hostfwd=tcp::{{ .SSHHostPort }}-:22,id=forward"],
@@ -62,8 +62,8 @@ source "qemu" "provision_source" {
 
   shutdown_command = "echo 'packerubuntu' | sudo shutdown -P now"
   shutdown_timeout = "15m"
-  ssh_username     = "admin"
-  ssh_password     = "packerubuntu"
+  ssh_username     = "vagrant"
+  ssh_password     = "vagrant"
   ssh_timeout      = "60m"
   headless         = true
 }

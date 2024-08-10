@@ -95,7 +95,8 @@ source "qemu" "custom_image" {
   ssh_username     = "admin"
   ssh_timeout      = "20m"
   shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
-  headless         = false # NOTE: set this to true when using in CI Pipelines
+  # NOTE: set this to true when using in CI Pipelines
+  headless         = false
 }
 
 build {
