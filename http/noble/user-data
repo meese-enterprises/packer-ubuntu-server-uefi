@@ -15,13 +15,12 @@ autoinstall:
       fi
   user-data:
     preserve_hostname: false
-    hostname: packerubuntu
+    hostname: ubuntu-noble
     package_upgrade: true
-    timezone: Europe/Berlin
+    timezone: America/New_York
     chpasswd:
-      expire: true
       list:
-        - user1:packerubuntu
+        - ubuntu:ubuntu
     users:
       - name: admin
         passwd: $6$xyz$74AlwKA3Z5n2L6ujMzm/zQXHCluA4SRc2mBfO2/O5uUc2yM2n2tnbBMi/IVRLJuKwfjrLZjAT7agVfiK7arSy/
@@ -29,7 +28,7 @@ autoinstall:
         lock-passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash
-      - name: user1
-        plain_text_passwd: packerubuntu
+      - name: ubuntu
+        plain_text_passwd: ubuntu
         lock-passwd: false
         shell: /bin/bash

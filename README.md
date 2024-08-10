@@ -1,7 +1,7 @@
 # packer-ubuntu-server-uefi
-Templates for creating Ubuntu Live Server Images with Packer + QEMU + Autoinstall (cloud-init)
+Templates for creating Ubuntu Server images with Packer + QEMU + Autoinstall (cloud-init)
 
-Currently Supported Images:
+Currently supported images:
 
 | Name                | Version       |
 |:--------------------|:-------------:|
@@ -9,7 +9,7 @@ Currently Supported Images:
 | __Jammy Jellyfish__ |     `22.04.4` |
 | __Noble Numbat__    |     `24.04`   |
 
-An accompanying blogpost is available [here][1]
+An accompanying blogpost is available [here](https://shantanoo-desai.github.io/posts/technology/packer-ubuntu-qemu/).
 
 ## Usage
 
@@ -17,57 +17,55 @@ Use GNU-Make to perform validation / build images:
 
 ### Validation
 
-To validate `cloud-init` and `ubuntu.pkr.hcl` template perform
+To validate `cloud-init` and `ubuntu.pkr.hcl` template perform:
 
-```bash
+```shell
 make validate
 ```
 
-To simply validate `cloud-init` against all distros
+To simply validate `cloud-init` against all distros:
 
-```bash
+```shell
 make validate-cloudinit
 ```
 
-To validate `cloud-init` configuration of a specific distro (`focal`, `jammy`, `noble`)
+To validate `cloud-init` configuration of a specific distro (`focal`, `jammy`, `noble`):
 
-```bash
-make validate-cloudinit-<distroname> # <distroname> here is either focal, jammy or noble
+```shell
+make validate-cloudinit-<distroname>
 ```
 
-To simply validate `ubuntu.pkr.hcl` template against all distros
+To simply validate `ubuntu.pkr.hcl` template against all distros:
 
-```bash
+```shell
 make validate-packer
 ```
 
 ### Build Images
 
-to build Ubuntu 20.04 (Focal) image
+To build Ubuntu 20.04 (Focal) image:
 
-```bash
+```shell
 make build-focal
 ```
 
-to build Ubuntu 22.04 (Jammy) image
+To build Ubuntu 22.04 (Jammy) image:
 
-```bash
+```shell
 make build-jammy
 ```
 
-to build Ubuntu 24.04 (Noble) image
+To build Ubuntu 24.04 (Noble) image:
 
-```bash
+```shell
 make build-noble
 ```
 
 ## UEFI BootLoader Sequence Determination
 
-see the `late-commands` in the `user-data` file. This is determined by installing `efibootmgr` on the live
+See the `late-commands` in the `user-data` file. This is determined by installing `efibootmgr` on the live
 image and performing `sudo efibootmgr`. This lists what are the sequences and when should the image be booted.
 
 > NOTE: there seems to be compatibility issue between Ubuntu 24.04 and older Ubuntu LTS version in terms of
-> output from the `efibootmgr`, namely, Capitalization. Hence each Cloud-Init `user-data` now is in a 
+> output from the `efibootmgr`, namely capitalization. Hence each Cloud-Init `user-data` now is in a
 > separate directory under the `http` directory in the repo.
-
-[1]: https://shantanoo-desai.github.io/posts/technology/packer-ubuntu-qemu/

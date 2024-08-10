@@ -8,7 +8,8 @@ services:
       - /dev/kvm
     volumes:
       - "../:/app"
-      - "../packer_cache:/app/packer_cache" # Packer Cache for faster builds
+      # Packer Cache for faster builds
+      - "../packer_cache:/app/packer_cache"
       - "/usr/share/OVMF/OVMF_CODE.fd:/usr/share/OVMF/OVMF_CODE.fd"
     environment:
       PACKER_LOG: 1
@@ -24,7 +25,8 @@ services:
       - /dev/kvm
     volumes:
       - "../:/app"
-      - "../packer_cache:/app/packer_cache" # Packer Cache for faster builds
+      # Packer Cache for faster builds
+      - "../packer_cache:/app/packer_cache"
       - "/usr/share/OVMF/OVMF_CODE.fd:/usr/share/OVMF/OVMF_CODE.fd"
     environment:
       PACKER_LOG: 1
