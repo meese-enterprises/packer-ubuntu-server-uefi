@@ -76,18 +76,18 @@ source "qemu" "custom_image" {
   # QEMU specific configuration
   cpus             = 4
   memory           = 4096
-  accelerator      = "kvm" # use none here if not using KVM
+  accelerator      = "kvm"
   disk_size        = "30G"
   disk_compression = true
 
-  efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE.fd"
-  efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS.fd"
+  efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE_4M.fd"
+  efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS_4M.fd"
   efi_boot          = true
 
-  # Final Image will be available in `output/packerubuntu-*/`
+  # Final image will be available in `output/packerubuntu-*/`
   output_directory = "${local.output_dir}"
 
-  # SSH configuration so that Packer can log into the Image
+  # SSH configuration so that Packer can log into the image
   ssh_password    = "packerubuntu"
   ssh_username    = "admin"
   ssh_timeout     = "20m"
@@ -106,7 +106,7 @@ build {
     ]
   }
 
-  # Finally Generate a Checksum (SHA256) which can be used for further stages in the `output` directory
+  # Generate a SHA256 checksum which can be used for further stages in the `output` directory
   post-processor "checksum" {
     checksum_types      = [ "sha256" ]
     output              = "${local.output_dir}/${local.vm_name}.{{.ChecksumType}}"

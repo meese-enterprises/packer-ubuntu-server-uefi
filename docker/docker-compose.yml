@@ -33,3 +33,20 @@ services:
     network_mode: host
     command:
       - make build-jammy
+  vm-builder-noble:
+    build: ./
+    image: qemu-packer-builder:latest
+    privileged: true
+    cpus: 4
+    devices:
+      - /dev/kvm
+    volumes:
+      - "../:/app"
+      # Packer Cache for faster builds
+      - "../packer_cache:/app/packer_cache"
+      - "/usr/share/OVMF/OVMF_CODE.fd:/usr/share/OVMF/OVMF_CODE.fd"
+    environment:
+      PACKER_LOG: 1
+    network_mode: host
+    command:
+      - make build-noble

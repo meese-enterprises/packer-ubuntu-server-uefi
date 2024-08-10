@@ -16,4 +16,3 @@
 ubuntu_distro	= "noble"
 ubuntu_version  = "24.04"
 ubuntu_iso_file = "ubuntu-24.04-live-server-amd64.iso"
-
