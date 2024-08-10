@@ -15,7 +15,7 @@
 packer {
   required_plugins {
     qemu = {
-      version = ">= 1.0.9"
+      version = ">= 1.1.0"
       source  = "github.com/hashicorp/qemu"
     }
   }
@@ -41,7 +41,7 @@ variable "vm_template_name" {
 
 variable "host_distro" {
   type = string
-  default = "manjaro"
+  default = "ubuntu"
 }
 
 locals {
@@ -50,10 +50,13 @@ locals {
   ovmf_prefix = {
     "manjaro" = "x64/"
   }
+  ovmf_suffix = {
+    "ubuntu" = "_4M"
+  }
 }
 
 source "qemu" "custom_image" {
-  vm_name     = "${local.vm_name}"
+  vm_name      = "${local.vm_name}"
 
   iso_url      = "https://releases.ubuntu.com/${var.ubuntu_version}/${var.ubuntu_iso_file}"
   iso_checksum = "file:https://releases.ubuntu.com/${var.ubuntu_version}/SHA256SUMS"
@@ -80,19 +83,19 @@ source "qemu" "custom_image" {
   disk_size        = "30G"
   disk_compression = true
 
-  efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE_4M.fd"
-  efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS_4M.fd"
+  efi_firmware_code = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_CODE${lookup(local.ovmf_suffix, var.host_distro, "")}.fd"
+  efi_firmware_vars = "/usr/share/OVMF/${lookup(local.ovmf_prefix, var.host_distro, "")}OVMF_VARS${lookup(local.ovmf_suffix, var.host_distro, "")}.fd"
   efi_boot          = true
 
   # Final image will be available in `output/packerubuntu-*/`
   output_directory = "${local.output_dir}"
 
   # SSH configuration so that Packer can log into the image
-  ssh_password    = "packerubuntu"
-  ssh_username    = "admin"
-  ssh_timeout     = "20m"
+  ssh_password     = "packerubuntu"
+  ssh_username     = "admin"
+  ssh_timeout      = "20m"
   shutdown_command = "echo 'packerubuntu' | sudo -S shutdown -P now"
-  headless        = false # NOTE: set this to true when using in CI Pipelines
+  headless         = false # NOTE: set this to true when using in CI Pipelines
 }
 
 build {

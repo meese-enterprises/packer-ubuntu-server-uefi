@@ -28,7 +28,7 @@ variable "vm_template_name" {
 
 variable "host_distro" {
   type = string
-  default = "manjaro"
+  default = "ubuntu"
 }
 
 locals {
@@ -36,6 +36,9 @@ locals {
   output_dir = "output/${local.vm_name}"
   ovmf_prefix = {
     "manjaro" = "x64/"
+  }
+  ovmf_suffix = {
+    "ubuntu" = "_4M"
   }
 }
 
